@@ -43,11 +43,12 @@ exports.nuevoProducto = async (req, res, next) => {
 
     await producto.save();
     res.json({
+      code: 0,
       mensaje: "Se agrego un nuevo producto",
     });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -57,7 +58,7 @@ exports.mostrarProductos = async (req, res, next) => {
     res.json(productos);
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -92,10 +93,10 @@ exports.actualizarProducto = async (req, res, next) => {
       }
     );
 
-    res.json(producto);
+    res.json({ code: 0, ...producto });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -106,10 +107,25 @@ exports.eliminarProducto = async (req, res, next) => {
     });
 
     res.json({
+      code: 0,
       mensaje: "El producto se ha eliminado",
     });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
+  }
+};
+
+exports.buscarProducto = async (req, res, next) => {
+  try {
+    const { query } = req.params;
+    const productos = await Productos.find({
+      nombre: new RegExp(query, "i"),
+    });
+
+    res.json(productos);
+  } catch (error) {
+    console.log(error);
+    res.send(error);
   }
 };

@@ -6,12 +6,14 @@ exports.nuevoCliente = async (req, res, next) => {
   try {
     // almacenar el registro
     await cliente.save();
-    res.json({
+    res.status(200).json({
+      code: 0,
       mensaje: "Se agregó un nuevo cliente",
     });
   } catch (error) {
     console.log(error);
-    next();
+
+    res.send(error);
   }
 };
 
@@ -46,19 +48,19 @@ exports.actualizarCliente = async (req, res, next) => {
       { new: true }
     );
 
-    res.json(cliente);
+    res.json({ code: 0, ...cliente });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
 exports.eliminarCliente = async (req, res, next) => {
   try {
     await Clientes.findOneAndDelete({ _id: req.params.idCliente });
-    res.json({ mensaje: "El cliente se ha eliminado" });
+    res.json({ code: 0, mensaje: "El cliente se ha eliminado" });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };

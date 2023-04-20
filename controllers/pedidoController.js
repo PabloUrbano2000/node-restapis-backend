@@ -5,23 +5,23 @@ exports.nuevoPedido = async (req, res, next) => {
     const pedido = new Pedidos(req.body);
 
     await pedido.save();
-    res.json({ mensaje: "Se agregó un nuevo pedido" });
+    res.json({ code: 0, mensaje: "Se agregó un nuevo pedido" });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
 exports.mostrarPedidos = async (req, res, next) => {
   try {
     const pedidos = await Pedidos.find({}).populate("cliente").populate({
-      path: "pedido.producto",
+      path: "productos.producto",
       model: "Productos",
     });
     res.json(pedidos);
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -41,7 +41,7 @@ exports.mostrarPedido = async (req, res, next) => {
     res.json(pedido);
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -58,10 +58,10 @@ exports.actualizarPedido = async (req, res, next) => {
         model: "Productos",
       });
 
-    res.json(pedido);
+    res.json({ code: 0, ...pedido });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
 
@@ -69,10 +69,11 @@ exports.eliminarPedido = async (req, res, next) => {
   try {
     await Pedidos.findOneAndDelete({ _id: req.params.idPedido });
     res.json({
+      code: 0,
       mensaje: "El pedido se ha eliminado",
     });
   } catch (error) {
     console.log(error);
-    next();
+    res.send(error);
   }
 };
